@@ -10,20 +10,21 @@ import time
 import os
 import copy
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_sizes, num_epochs=25):
+def train_model(model, criterion, optimizer, scheduler, dataloaders,
+                dataset_sizes, num_epochs=25):
     print("DATASET SIZE", dataset_sizes)
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0
-    retunr_value_train = np.zeros((4,num_epochs))
+    retunr_value_train = np.zeros((4, num_epochs))
 
     for epoch in range(num_epochs):
-        #print('Epoch {}/{}'.format(epoch, num_epochs - 1))
-        #print('-' * 10)
+        # print('Epoch {}/{}'.format(epoch, num_epochs - 1))
+        # print('-' * 10)
 
         X = []
         Y = []
@@ -35,15 +36,14 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
                 scheduler.step()
                 model.train()  # Set model to training mode
             else:
-                model.eval()   # Set model to evaluate mode
+                model.eval()  # Set model to evaluate mode
 
             running_loss = 0.0
             running_corrects = 0
 
             # Iterate over data.
-            for batch_idx, (data, target) in enumerate( dataloaders[phase]):
+            for batch_idx, (data, target) in enumerate(dataloaders[phase]):
                 inputs, labels = data.to(device), target.to(device)
-
 
                 # zero the parameter gradients
                 optimizer.zero_grad()
@@ -55,7 +55,7 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
                     _, preds = torch.max(outputs, 1)
                     loss = criterion(outputs, labels)
 
-                    if epoch == num_epochs-1:
+                    if epoch == num_epochs - 1:
                         for out in outputs.cpu().detach().numpy():
                             X.append(out)
                             if phase == "train":
@@ -64,7 +64,6 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
                                 Y.append(0)
                         for cla in labels.cpu().detach().numpy():
                             C.append(cla)
-
 
                     # backward + optimize only if in training phase
                     if phase == 'train':
@@ -85,9 +84,7 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
                 retunr_value_train[2][epoch] = epoch_loss
                 retunr_value_train[3][epoch] = epoch_acc
 
-
-
-            #print('{} Loss: {:.4f} Acc: {:.4f}'.format(
+            # print('{} Loss: {:.4f} Acc: {:.4f}'.format(
             #    phase, epoch_loss, epoch_acc))
 
             # deep copy the model
@@ -95,7 +92,7 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders, dataset_siz
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
 
-        #print()
+        # print()
     time_elapsed = time.time() - since
     print('Training complete in {:.0f}m {:.0f}s'.format(
         time_elapsed // 60, time_elapsed % 60))

@@ -30,12 +30,15 @@ class Config:
         self.__data = cfg if cfg is not None else {}
         if path is not None and cfg is None:
             self.__path = os.path.abspath(os.path.join(os.curdir, path))
-            with open(os.path.join(self.__path, "default.yaml"), "rb") as default_config:
+            with open(os.path.join(self.__path, "default.yaml"),
+                      "rb") as default_config:
                 self.__data.update(load_yaml(default_config))
             for cfg in sorted(os.listdir(self.__path)):
                 if cfg != "default.yaml" and cfg[-4:] in ["yaml", "yml"]:
-                    with open(os.path.join(self.__path, cfg), "rb") as config_file:
-                        self.__data = update_config(self.__data, load_yaml(config_file))
+                    with open(os.path.join(self.__path, cfg),
+                              "rb") as config_file:
+                        self.__data = update_config(self.__data,
+                                                    load_yaml(config_file))
 
     def set_(self, key, value):
         self.__data[key] = value
@@ -59,6 +62,7 @@ class Config:
     def __getitem__(self, item):
         return self.__data[item]
 
+
 class Singleton:
     def __init__(self, cls):
         self.cls = cls
@@ -68,5 +72,6 @@ class Singleton:
         if self.instance is None:
             self.instance = self.cls(*args, **kwargs)
             return self.instance
+
 
 config = Singleton(Config)
