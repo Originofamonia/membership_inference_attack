@@ -18,9 +18,9 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders,
     print("DATASET SIZE", dataset_sizes)
     since = time.time()
 
-    best_model_wts = copy.deepcopy(model.state_dict())
+    # best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0
-    retunr_value_train = np.zeros((4, num_epochs))
+    return_value_train = np.zeros((4, num_epochs))
 
     for epoch in range(num_epochs):
         # print('Epoch {}/{}'.format(epoch, num_epochs - 1))
@@ -78,11 +78,11 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders,
             epoch_acc = running_corrects.double() / dataset_sizes[phase]
 
             if phase == 'train':
-                retunr_value_train[0][epoch] = epoch_loss
-                retunr_value_train[1][epoch] = epoch_acc
+                return_value_train[0][epoch] = epoch_loss
+                return_value_train[1][epoch] = epoch_acc
             else:
-                retunr_value_train[2][epoch] = epoch_loss
-                retunr_value_train[3][epoch] = epoch_acc
+                return_value_train[2][epoch] = epoch_loss
+                return_value_train[3][epoch] = epoch_acc
 
             # print('{} Loss: {:.4f} Acc: {:.4f}'.format(
             #    phase, epoch_loss, epoch_acc))
@@ -100,4 +100,4 @@ def train_model(model, criterion, optimizer, scheduler, dataloaders,
 
     # load best model weights
     # model.load_state_dict(best_model_wts)
-    return model, retunr_value_train, np.array(X), np.array(Y), np.array(C)
+    return model, return_value_train, np.array(X), np.array(Y), np.array(C)
