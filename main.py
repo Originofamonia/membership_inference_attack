@@ -59,7 +59,7 @@ if config.statistics.dataset == "MNIST":
                     res_accuracy_per_class)
             # np.save(path + "/res_best_acc_shadows.npy", res_best_acc_shadows)
     if config.statistics.type == "number_shadow":
-        print("START STATS ON NUMBER SHADOW  WITH MNIST : ",
+        print("START STATS ON NUMBER SHADOW WITH MNIST : ",
               config.statistics.number_shadow_value)
         res_precision = np.zeros(len(config.statistics.number_shadow_value))
         res_recall = np.zeros(len(config.statistics.number_shadow_value))
